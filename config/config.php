@@ -19,15 +19,27 @@ if (!$conexao->select_db($banco)) {
     $conexao->select_db($banco);
 }
 
+$sqlCriarTabelaUsuarios = "CREATE TABLE IF NOT EXISTS `usuarios` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
+
+if (!$conexao->query($sqlCriarTabelaUsuarios)) {
+    die("Falha ao criar tabela usuarios: " . $conexao->error);
+}
+
 $sqlCriarTabela = "CREATE TABLE IF NOT EXISTS `noticias` (
-    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `titulo` VARCHAR(255) NOT NULL,
-    `noticia` TEXT NOT NULL,
-    `data` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `autor` int foreign key references usuarios(id),
-    `imagem` VARCHAR(255) DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+  `id` int(11) NOT NULL,
+  `titulo` varchar(255) NOT NULL,
+  `noticia` text NOT NULL,
+  `data` datetime DEFAULT current_timestamp(),
+  `autor` int(11) DEFAULT NULL,
+  `imagem` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 
 if (!$conexao->query($sqlCriarTabela)) {
     die("Falha ao criar tabela noticias: " . $conexao->error);

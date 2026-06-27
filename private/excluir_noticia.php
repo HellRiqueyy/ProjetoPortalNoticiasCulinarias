@@ -3,5 +3,4 @@
 $id = $_GET['id'];
 $stmt = $conexao->prepare("DELETE FROM noticias WHERE id = ?");
 
-echo "teste;";
 ?>

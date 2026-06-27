@@ -1,16 +1,15 @@
 <?php
 include_once '../config/config.php';
-include_once '../classes/Usuario.php';
+include_once '../classes/usuario.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = new Usuario($db);
+    $usuario = new Usuario($conexao);
     $nome = $_POST['nome'];
     $email = $_POST['email'];
     $senha = $_POST['senha'];
     $usuario->criar($nome, $email, $senha);
-    header('Location: portal.php');
-    exit();
+    $alert=true;
 }
 ?>
 <!DOCTYPE html>
@@ -32,6 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="password" name="senha" required>
         <br><br>
         <input type="submit" value="Adicionar">
+        <br><br>
+        <p>Já tem uma conta? <a href="./login.php">Faça login aqui</a></p>
+        <?php if (isset($alert) && $alert) echo '<p>Usuário adicionado com sucesso!</p>'; ?>
     </form>
 </body>
 </html>

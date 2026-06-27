@@ -1,10 +1,10 @@
 <?php
 session_start();
 include_once '../config/config.php';
-include_once '../classes/Usuario.php';
+include_once '../classes/usuario.php';
 
 
-$usuario = new Usuario($db);
+$usuario = new Usuario($conexao);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $senha = $_POST['senha'];
         if ($dados_usuario = $usuario->login($email, $senha)) {
             $_SESSION['usuario_id'] = $dados_usuario['id'];
-            header('Location: portal.php');
+            header('Location: ../index.php');
             exit();
         } else {
             $mensagem_erro = "Credenciais inválidas!";
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <br><br>
                 <input type="submit" name="login" value="Login">
             </form>
-            <p>Não tem uma conta? <a href="./registrar.php">Registre-se aqui</a></p>
+            <p>Não tem uma conta? <a href="./cadastro.php">Registre-se aqui</a></p>
             <div class="mensagem">
                 <?php if (isset($mensagem_erro)) echo '<p>' . $mensagem_erro . '</p>'; ?>
             </div>

@@ -1,5 +1,28 @@
-<?php include 'conexao.php'; include 'funcoes.php';
-$noticias = $conexao->query("SELECT * FROM noticias");
+<?php
+session_start();
+include_once __DIR__ . '/../config/config.php';
+
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: ../public/login.php');
+    exit;
+}
+
+$stmt = $conexao->prepare('SELECT nome, nivel FROM usuarios WHERE id = ?');
+$stmt->bind_param('i', $_SESSION['usuario_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$usuario = $result->fetch_assoc();
+
+if (!$usuario) {
+    session_destroy();
+    header('Location: ../public/login.php');
+    exit;
+}
+
+$nome = $usuario['nome'];
+$nivel = $usuario['nivel'];
+
+$noticias = $conexao->query('SELECT * FROM noticias ORDER BY data DESC');
 ?>
 
 <!DOCTYPE html>
@@ -8,25 +31,25 @@ $noticias = $conexao->query("SELECT * FROM noticias");
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard - Portal de Notícias Culinárias</title>
-</head>
+    </head>
 <body>
-    <h1>Olá, <?php echo $_SESSION['nome']; ?>!</h1>
+    <h1>Olá, <?php echo htmlspecialchars($nome); ?>!</h1>
     <p>Esta é o seu dashboard.</p>
 
     <a href="nova_noticia.php">Cadastrar nova notícia</a>
-    <?php if ($_SESSION['nivel'] == 'admin'): ?>
-        <a href="usuarios.php">Gerenciar usuários (Admin)</a>
+    <?php if ($nivel === 'admin'): ?>
+        <a href="../admin/usuarios.php">Gerenciar usuários (Admin)</a>
     <?php endif; ?>
-        <a href="logout.php">Sair</a>
+    <a href="../public/logout.php">Sair</a>
 
     <h3>Suas publicações</h3>
     <?php while ($noticia = $noticias->fetch_assoc()): ?>
         <div>
-            <h4><?php echo $noticia['titulo']; ?></h4>
-            <p><?php echo $noticia['noticia']; ?></p>
-            <p><strong>Autor:</strong> <?php echo $noticia['autor']; ?></p>
-            <?php if ($noticia['imagem']): ?>
-                <img src="<?php echo $noticia['imagem']; ?>" alt="Imagem da notícia" width="200">
+            <h4><?php echo htmlspecialchars($noticia['titulo']); ?></h4>
+            <p><?php echo nl2br(htmlspecialchars($noticia['noticia'])); ?></p>
+            <p><strong>Autor:</strong> <?php echo htmlspecialchars($noticia['autor']); ?></p>
+            <?php if (!empty($noticia['imagem'])): ?>
+                <img src="<?php echo htmlspecialchars($noticia['imagem']); ?>" alt="Imagem da notícia" width="200">
             <?php endif; ?>
             <a href="editar_noticia.php?id=<?php echo $noticia['id']; ?>">Editar</a>
             <a href="excluir_noticia.php?id=<?php echo $noticia['id']; ?>">Excluir</a>

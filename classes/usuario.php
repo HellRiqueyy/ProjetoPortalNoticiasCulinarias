@@ -43,11 +43,11 @@ class Usuario {
         return false;
     }
 
-    public function criar($nome, $email, $senha) {
+    public function criarUsuario($nome, $email, $senha) {
         return $this->registrar($nome, $email, $senha);
     }
 
-    public function ler() {
+    public function lerUsuarios() {
         $query = "SELECT * FROM " . $this->table_name;
         $stmt = $this->conn->prepare($query);
 
@@ -59,7 +59,7 @@ class Usuario {
         return $stmt->get_result();
     }
 
-    public function lerPorId($id) {
+    public function lerPorIdUsuario($id) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
 
@@ -73,7 +73,7 @@ class Usuario {
         return $resultado->fetch_assoc();
     }
 
-    public function atualizar($id, $nome, $email) {
+    public function atualizarUsuario($id, $nome, $email) {
         $query = "UPDATE " . $this->table_name . " SET nome = ?, email = ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
 
@@ -86,7 +86,7 @@ class Usuario {
         return $stmt;
     }
 
-    public function deletar($id) {
+    public function deletarUsuario($id) {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
 

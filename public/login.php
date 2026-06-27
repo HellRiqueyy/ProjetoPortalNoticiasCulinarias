@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $senha = $_POST['senha'];
         if ($dados_usuario = $usuario->login($email, $senha)) {
             $_SESSION['usuario_id'] = $dados_usuario['id'];
+            $_SESSION['usuario_nome'] = $dados_usuario['nome'];
             header('Location: ../index.php');
             exit();
         } else {

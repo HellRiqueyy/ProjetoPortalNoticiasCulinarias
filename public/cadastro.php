@@ -8,7 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
     $email = $_POST['email'];
     $senha = $_POST['senha'];
-    $usuario->criar($nome, $email, $senha);
+    $imagem = $_POST['imagem'];
+    $usuario->criarUsuario($nome, $email, $senha, $imagem);
     $alert=true;
 }
 ?>
@@ -29,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <br><br>
         <label for="senha">Senha:</label>
         <input type="password" name="senha" required>
+        <br><br>
+        <label for="imagem">Foto:</label>
+        <input type="text" name="imagem" required>
         <br><br>
         <input type="submit" value="Adicionar">
         <br><br>

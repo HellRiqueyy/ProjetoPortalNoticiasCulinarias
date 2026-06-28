@@ -1,19 +1,17 @@
 <?php
 session_start();
 include_once __DIR__ . '/../config/config.php';
+include_once __DIR__ . '/../classes/usuario.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ../public/login.php');
     exit;
 }
 
-$stmt = $conexao->prepare('SELECT nivel FROM usuarios WHERE id = ?');
-$stmt->bind_param('i', $_SESSION['usuario_id']);
-$stmt->execute();
-$result = $stmt->get_result();
-$currentUser = $result->fetch_assoc();
+$usuarioModel = new Usuario($conexao);
+$currentUser = $usuarioModel->lerPorIdUsuario($_SESSION['usuario_id']);
 
-if (!$currentUser || $currentUser['nivel'] !== 'admin') {
+if (!$currentUser || !$usuarioModel->ehAdmin($_SESSION['usuario_id'])) {
     die('Acesso negado.');
 }
 
@@ -27,9 +25,7 @@ if ($id === $_SESSION['usuario_id']) {
     die('Você não pode excluir sua própria conta.');
 }
 
-$stmt = $conexao->prepare('DELETE FROM usuarios WHERE id = ?');
-$stmt->bind_param('i', $id);
-$stmt->execute();
+$usuarioModel->deletarUsuario($id);
 
 header('Location: usuarios.php');
 exit;

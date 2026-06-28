@@ -35,8 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="senha">Senha:</label>
         <input type="password" name="senha" required>
         <br><br>
-        <label for="imagem">Foto:</label>
-        <input type="text" name="imagem" required>
+        <label for="imagem">Foto de perfil (opcional):</label>
+        <input type="file" name="imagem" accept="imagem/*">
         <br><br>
         <input type="submit" value="Adicionar">
         <br><br>

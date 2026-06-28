@@ -1,19 +1,17 @@
 <?php
 session_start();
 include_once __DIR__ . '/../config/config.php';
+include_once __DIR__ . '/../classes/usuario.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ../public/login.php');
     exit;
 }
 
-$stmt = $conexao->prepare('SELECT nivel FROM usuarios WHERE id = ?');
-$stmt->bind_param('i', $_SESSION['usuario_id']);
-$stmt->execute();
-$result = $stmt->get_result();
-$currentUser = $result->fetch_assoc();
+$usuarioModel = new Usuario($conexao);
+$currentUser = $usuarioModel->lerPorIdUsuario($_SESSION['usuario_id']);
 
-if (!$currentUser || $currentUser['nivel'] !== 'admin') {
+if (!$currentUser || !$usuarioModel->ehAdmin($_SESSION['usuario_id'])) {
     die('Acesso negado.');
 }
 
@@ -22,11 +20,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $id = (int) $_GET['id'];
-
-$stmt = $conexao->prepare('SELECT * FROM usuarios WHERE id = ?');
-$stmt->bind_param('i', $id);
-$stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
+$user = $usuarioModel->lerPorIdUsuario($id);
 
 if (!$user) {
     die('Usuário não encontrado.');
@@ -37,9 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $nivel = $_POST['nivel'];
 
-    $stmt = $conexao->prepare('UPDATE usuarios SET nome = ?, email = ?, nivel = ? WHERE id = ?');
-    $stmt->bind_param('sssi', $nome, $email, $nivel, $id);
-    $stmt->execute();
+    $usuarioModel->atualizarUsuario($id, $nome, $email, $nivel);
     header('Location: usuarios.php');
     exit;
 }

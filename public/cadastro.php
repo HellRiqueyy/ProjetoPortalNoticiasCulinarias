@@ -9,43 +9,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
     $imagem = $_POST['imagem'];
-    $usuario->criarUsuario($nome, $email, $senha, $imagem);
+    $usuario->criarUsuario($nome, $email, $senha);
     $alert = true;
 }
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
-    <title>Adicionar Usuário</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro | Culinária em Foco</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
 </head>
-
 <body>
     <?php include '../contents/header.html'; ?>
 
-    <h1>Adicionar Usuário</h1>
-    <form method="POST">
-        <label for="nome">Nome:</label>
-        <input type="text" name="nome" required>
-        <br><br>
-        <label for="email">Email:</label>
-        <input type="email" name="email" required>
-        <br><br>
-        <label for="senha">Senha:</label>
-        <input type="password" name="senha" required>
-        <br><br>
-        <label for="imagem">Foto de perfil (opcional):</label>
-        <input type="file" name="imagem" accept="imagem/*">
-        <br><br>
-        <input type="submit" value="Adicionar">
-        <br><br>
-        <p>Já tem uma conta? <a href="./login.php">Faça login aqui</a></p>
-        <?php if (isset($alert) && $alert)
-            echo '<p>Usuário adicionado com sucesso!</p>'; ?>
+    <main class="auth-shell">
+        <section class="auth-card">
+            <h1>Criar conta</h1>
+            <p>Junte-se ao portal e compartilhe sua paixão por gastronomia.</p>
 
-    </form>
+            <form method="POST" class="form-grid">
+                <label for="nome">Nome</label>
+                <input type="text" name="nome" id="nome" required>
+
+                <label for="email">E-mail</label>
+                <input type="email" name="email" id="email" required>
+
+                <label for="senha">Senha</label>
+                <input type="password" name="senha" id="senha" required>
+
+                <label for="imagem">Foto de perfil (opcional)</label>
+                <input type="file" name="imagem" id="imagem" accept="image/*">
+
+                <button type="submit" class="btn">Cadastrar</button>
+            </form>
+
+            <p>Já tem uma conta? <a href="./login.php">Faça login aqui</a></p>
+            <?php if (isset($alert) && $alert) echo '<p>Usuário adicionado com sucesso!</p>'; ?>
+        </section>
+    </main>
+
     <?php include '../contents/footer.html'; ?>
 </body>
-
 </html>

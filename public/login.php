@@ -25,43 +25,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html>
-
-
+<html lang="pt-br">
 <head>
-    <title>A U T E N T I C A Ç Ã O</title>
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Culinária em Foco</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
 </head>
-
-
 <body>
+    <?php include '../contents/header.html'; ?>
 
-<?php include '../contents/header.html'; ?>
-    <div class="container">
+    <main class="auth-shell">
+        <section class="auth-card">
+            <h1>Entrar</h1>
+            <p>Acesse sua conta e continue acompanhando o melhor da culinária.</p>
 
+            <form method="POST" class="form-grid">
+                <label for="email">E-mail</label>
+                <input type="email" name="email" id="email" required>
 
-        <div class="box">
-            <h1>A U T E N T I C A Ç Ã O</h1>
+                <label for="senha">Senha</label>
+                <input type="password" name="senha" id="senha" required>
 
-
-            <form method="POST">
-                <label for="email">Email:</label>
-                <input type="email" name="email" required>
-                <br><br>
-                <label for="senha">Senha:</label>
-                <input type="password" name="senha" required>
-                <br><br>
-                <input type="submit" name="login" value="Login">
+                <button type="submit" name="login" class="btn">Entrar</button>
             </form>
+
             <p>Não tem uma conta? <a href="./cadastro.php">Registre-se aqui</a></p>
             <div class="mensagem">
                 <?php if (isset($mensagem_erro)) echo '<p>' . $mensagem_erro . '</p>'; ?>
-                
             </div>
-        </div>
-<?php include '../contents/footer.html'; ?>
+        </section>
+    </main>
 
+    <?php include '../contents/footer.html'; ?>
 </body>
-
-
 </html>

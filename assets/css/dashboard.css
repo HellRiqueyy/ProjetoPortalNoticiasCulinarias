@@ -1,0 +1,36 @@
+.dashboard-shell {
+  padding: 24px 0 40px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.post-list {
+  display: grid;
+  gap: 18px;
+}
+
+.post-card {
+  background: var(--cor-branco);
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--sombra);
+}
+
+.post-card__image {
+  border-radius: 12px;
+  margin-top: 12px;
+}

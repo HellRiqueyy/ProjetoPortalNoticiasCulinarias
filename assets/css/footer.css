@@ -1,6 +1,6 @@
 .site-footer {
-  background: #111827;
-  color: #f9fafb;
+  background: #2f241d;
+  color: #fef7ee;
   padding: 24px;
   margin-top: 32px;
 }
@@ -19,5 +19,5 @@
 .site-footer__subtitle {
   margin: 8px 0 0;
   font-size: 0.9rem;
-  color: #d1d5db;
+  color: #f4c371;
 }

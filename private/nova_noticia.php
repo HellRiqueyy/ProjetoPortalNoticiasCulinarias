@@ -46,24 +46,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Nova Notícia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Notícia | Culinária em Foco</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
 </head>
 <body>
-    <h1>Cadastrar Nova Notícia</h1>
-    <?php if ($message): ?>
-        <p><?php echo htmlspecialchars($message); ?></p>
-    <?php endif; ?>
-    <form method="POST" enctype="multipart/form-data">
-        <label for="titulo">Título:</label>
-        <input type="text" id="titulo" name="titulo" required>
-        <br><br>
-        <label for="noticia">Notícia:</label>
-        <textarea id="noticia" name="noticia" required></textarea>
-        <br><br>
-        <label for="imagem">Imagem (opcional):</label>
-        <input type="file" id="imagem" name="imagem" accept="image/*">
-        <br><br>
-        <button type="submit">Cadastrar</button>
-    </form>
+    <?php include '../contents/header.html'; ?>
+
+    <main class="auth-shell">
+        <section class="auth-card">
+            <h1>Cadastrar Nova Notícia</h1>
+            <?php if ($message): ?>
+                <p><?php echo htmlspecialchars($message); ?></p>
+            <?php endif; ?>
+
+            <form method="POST" enctype="multipart/form-data" class="form-grid">
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" name="titulo" required>
+
+                <label for="noticia">Notícia</label>
+                <textarea id="noticia" name="noticia" rows="6" required></textarea>
+
+                <label for="imagem">Imagem (opcional)</label>
+                <input type="file" id="imagem" name="imagem" accept="image/*">
+
+                <button type="submit" class="btn">Cadastrar</button>
+            </form>
+        </section>
+    </main>
+
+    <?php include '../contents/footer.html'; ?>
 </body>
 </html>

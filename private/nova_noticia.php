@@ -1,13 +1,13 @@
 <?php
 session_start();
 include_once __DIR__ . '/../config/config.php';
+include_once __DIR__ .'/../classes/Noticia.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ../public/login.php');
     exit;
 }
 
-$autor = $_SESSION['usuario_id'];
 $message = '';
 
 function uploadImagem($file) {
@@ -27,26 +27,18 @@ function uploadImagem($file) {
     return null;
 }
 
+$noticiaModel = new Noticia($conexao);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titulo = $_POST['titulo'];
-    $noticia = $_POST['noticia'];
+    $conteudoNoticia = $_POST['noticia'];
     $imagem = null;
 
     if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
         $imagem = uploadImagem($_FILES['imagem']);
     }
 
-    $stmt = $conexao->prepare('INSERT INTO noticias (titulo, noticia, autor, imagem) VALUES (?, ?, ?, ?)');
-    $stmt->bind_param('ssis', $titulo, $noticia, $autor, $imagem);
-
-    if ($stmt->execute()) {
-        header('Location: dashboard.php');
-        exit;
-    } else {
-        $message = 'Erro ao cadastrar notícia: ' . $stmt->error;
-    }
-
-    $stmt->close();
+    $noticiaModel->criarNoticia($titulo, $conteudoNoticia, $imagem);
+    $message = 'Notícia cadastrada com sucesso!';
 }
 ?>
 

@@ -26,7 +26,8 @@ $sqlCriarTabelaUsuarios = "CREATE TABLE IF NOT EXISTS `usuarios` (
   `senha` varchar(255) NOT NULL,
   `foto` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+    `nivel` enum('admin','user') NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 
 if (!$conexao->query($sqlCriarTabelaUsuarios)) {

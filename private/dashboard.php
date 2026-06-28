@@ -1,17 +1,18 @@
 <?php
 session_start();
 include_once __DIR__ . '/../config/config.php';
-
+include_once __DIR__ .'/../classes/Noticia.php';
+$noticiaModel = new Noticia($conexao);
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ../public/login.php');
     exit;
 }
 
-$stmt = $conexao->prepare('SELECT nome, nivel FROM usuarios WHERE id = ?');
-$stmt->bind_param('i', $_SESSION['usuario_id']);
-$stmt->execute();
-$result = $stmt->get_result();
-$usuario = $result->fetch_assoc();
+//$stmt = $conexao->prepare('SELECT nome, nivel FROM usuarios WHERE id = ?');
+//$stmt->bind_param('i', $_SESSION['usuario_id']);
+//$stmt->execute();
+//$result = $stmt->get_result();
+//$usuario = $result->fetch_assoc();
 
 if (!$usuario) {
     session_destroy();
@@ -19,10 +20,8 @@ if (!$usuario) {
     exit;
 }
 
-$nome = $usuario['nome'];
-$nivel = $usuario['nivel'];
-
-$noticias = $conexao->query('SELECT * FROM noticias ORDER BY data DESC');
+$nome = $_SESSION['usuario_nome'];
+$nivel = $_SESSION['usuario_nivel'];
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +32,7 @@ $noticias = $conexao->query('SELECT * FROM noticias ORDER BY data DESC');
         <title>Dashboard - Portal de Notícias Culinárias</title>
     </head>
 <body>
+    <?php include '../contents/header.html'; ?>
     <h1>Olá, <?php echo htmlspecialchars($nome); ?>!</h1>
     <p>Esta é o seu dashboard.</p>
 
@@ -43,7 +43,8 @@ $noticias = $conexao->query('SELECT * FROM noticias ORDER BY data DESC');
     <a href="../public/logout.php">Sair</a>
 
     <h3>Suas publicações</h3>
-    <?php while ($noticia = $noticias->fetch_assoc()): ?>
+    <?php $resultadoNoticias = $noticiaModel->lerNoticiasPorAutor(); ?>
+    <?php while ($noticia = $resultadoNoticias->fetch_assoc()): ?>
         <div>
             <h4><?php echo htmlspecialchars($noticia['titulo']); ?></h4>
             <p><?php echo nl2br(htmlspecialchars($noticia['noticia'])); ?></p>
@@ -55,5 +56,6 @@ $noticias = $conexao->query('SELECT * FROM noticias ORDER BY data DESC');
             <a href="excluir_noticia.php?id=<?php echo $noticia['id']; ?>">Excluir</a>
         </div>
     <?php endwhile; ?>
+        <?php include '../contents/footer.html'; ?>
 </body>
 </html>

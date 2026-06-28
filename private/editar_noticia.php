@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once __DIR__ . '/../config/config.php';
+include_once __DIR__ .'/../classes/Noticia.php';
 
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: ../public/login.php');
@@ -12,24 +13,19 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $id = (int) $_GET['id'];
+$noticiaModel = new Noticia($conexao);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titulo = $_POST['titulo'];
     $noticia = $_POST['noticia'];
 
-    $stmt = $conexao->prepare('UPDATE noticias SET titulo = ?, noticia = ? WHERE id = ?');
-    $stmt->bind_param('ssi', $titulo, $noticia, $id);
-    $stmt->execute();
+    $noticiaModel->atualizarNoticia($id, $titulo, $noticia);
 
     header('Location: dashboard.php');
     exit;
 }
 
-$stmt = $conexao->prepare('SELECT * FROM noticias WHERE id = ?');
-$stmt->bind_param('i', $id);
-$stmt->execute();
-$result = $stmt->get_result();
-$noticia = $result->fetch_assoc();
+$noticia = $noticiaModel->lerNoticiaPorId($id);
 
 if (!$noticia) {
     die('Notícia não encontrada.');

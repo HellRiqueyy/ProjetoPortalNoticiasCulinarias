@@ -1,12 +1,30 @@
 <?php
-class Noticia {
+class Noticia
+{
     private $conn;
     private $table_name = "noticias";
-    public function __construct($banco) {
+    public function __construct($banco)
+    {
         $this->conn = $banco;
     }
+    public function resumirTexto($texto, $limite)
+    {
+        // Se o texto já for menor que o limite, devolve ele inteiro
+        if (mb_strlen($texto) <= $limite) {
+            return $texto;
+        }
 
-    public function criarNoticia($titulo, $noticia, $imagem) {
+        // Limita o texto pelo número de caracteres
+        $subtexto = mb_substr($texto, 0, $limite);
+
+        // Procura a posição do último espaço para não cortar uma palavra no meio
+        $ultimoEspaco = mb_strrpos($subtexto, ' ');
+
+        // Corta o texto no último espaço encontrado e adiciona as reticências
+        return mb_substr($subtexto, 0, $ultimoEspaco) . '...';
+    }
+    public function criarNoticia($titulo, $noticia, $imagem)
+    {
         $autor = $_SESSION['usuario_id'];
         date_default_timezone_set('America/Sao_Paulo');
         $data = date('Y-m-d H:i:s');
@@ -23,7 +41,8 @@ class Noticia {
         return $stmt;
     }
 
-    public function lerNoticias() {
+    public function lerNoticias()
+    {
         $query = "SELECT * FROM " . $this->table_name;
         $stmt = $this->conn->prepare($query);
 
@@ -34,8 +53,23 @@ class Noticia {
         $stmt->execute();
         return $stmt->get_result();
     }
-public function lerNoticiaPorId($id) {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE id = ?";
+    public function lerNoticiasPorData()
+    {
+        $query = "SELECT noticias.id, noticias.titulo, noticias.noticia, noticias.data, noticias.imagem, usuarios.nome as autorNome FROM "
+            . $this->table_name . " JOIN usuarios ON noticias.autor = usuarios.id ORDER BY data DESC";
+        $stmt = $this->conn->prepare($query);
+
+        if (!$stmt) {
+            throw new Exception("Erro ao preparar consulta: " . $this->conn->error);
+        }
+
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+    public function lerNoticiaPorId($id)
+    {
+        $query = "SELECT  noticias.id, noticias.titulo, noticias.data, noticias.noticia, noticias.imagem, usuarios.nome as autorNome FROM "
+            . $this->table_name . " JOIN usuarios ON noticias.autor = usuarios.id WHERE noticias.id = ?";
         $stmt = $this->conn->prepare($query);
 
         if (!$stmt) {
@@ -46,7 +80,8 @@ public function lerNoticiaPorId($id) {
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
-    public function lerNoticiasPorAutor() {
+    public function lerNoticiasPorAutor()
+    {
         $autor_id = $_SESSION['usuario_id'];
         $query = "SELECT * FROM " . $this->table_name . " WHERE autor = ?";
         $stmt = $this->conn->prepare($query);
@@ -59,7 +94,8 @@ public function lerNoticiaPorId($id) {
         $stmt->execute();
         return $stmt->get_result();
     }
-    public function deletarNoticia($id) {
+    public function deletarNoticia($id)
+    {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
 
@@ -71,7 +107,8 @@ public function lerNoticiaPorId($id) {
         $stmt->execute();
         return $stmt;
     }
-    public function atualizarNoticia($id, $titulo, $noticia) {
+    public function atualizarNoticia($id, $titulo, $noticia)
+    {
         $query = "UPDATE " . $this->table_name . " SET titulo = ?, noticia = ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
 

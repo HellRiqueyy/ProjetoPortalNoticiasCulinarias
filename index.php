@@ -1,5 +1,16 @@
+<?php
+session_start();
+include_once __DIR__ . '/config/config.php';
+include_once __DIR__ . '/classes/Noticia.php';
+$noticiaModel = new Noticia($conexao);
+
+$noticias = $noticiaModel->lerNoticiasPorData();
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +18,7 @@
     <link rel="stylesheet" href="assets/css/base.css">
     <link rel="stylesheet" href="assets/css/home.css">
 </head>
+
 <body>
     <?php include 'contents/header.html'; ?>
 
@@ -17,24 +29,26 @@
         </section>
 
         <section class="news-list">
-            <article class="news-card">
-                <div class="news-card__content">
-                    <h2 class="news-card__title">Novidades do mês</h2>
-                    <p class="news-card__meta">Por Redação • 27 jun 2026</p>
-                    <p>Confira as principais tendências de sabores, ingredientes e experiências gastronômicas que estão marcando o cenário atual.</p>
-                </div>
-            </article>
-
-            <article class="news-card">
-                <div class="news-card__content">
-                    <h2 class="news-card__title">Receita do dia</h2>
-                    <p class="news-card__meta">Por Ana Souza • 26 jun 2026</p>
-                    <p>Uma receita prática, elegante e perfeita para surpreender em qualquer ocasião.</p>
-                </div>
-            </article>
+            <?php foreach ($noticias as $noticia): ?>
+                <article class="news-card">
+                    <div class="news-card__content">
+                        <a href="public/noticia.php?id=<?php echo htmlspecialchars($noticia['id']); ?>">
+                            <h2 class="news-card__title"><?php echo htmlspecialchars($noticia['titulo']); ?></h2>
+                        </a>
+                        <p class="news-card__meta">Por <?php echo htmlspecialchars($noticia['autorNome']); ?> •
+                            <?php echo date('d M Y', strtotime($noticia['data'])); ?>
+                        </p>
+                        <p><?php echo nl2br(htmlspecialchars($noticiaModel->resumirTexto($noticia['noticia'],50))); ?></p>
+                        <?php if (!empty($noticia['imagem'])): ?>
+                            <img src="<?php echo $noticia['imagem']; ?>" alt="Imagem da notícia">
+                        <?php endif; ?>
+                    </div>
+                </article>
+            <?php endforeach; ?>
         </section>
     </main>
 
     <?php include 'contents/footer.html'; ?>
 </body>
+
 </html>

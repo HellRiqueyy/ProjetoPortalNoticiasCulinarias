@@ -58,8 +58,7 @@ $nivel = $_SESSION['usuario_nivel'];
                 <?php while ($noticia = $resultadoNoticias->fetch_assoc()): ?>
                     <article class="post-card">
                         <h4><?php echo htmlspecialchars($noticia['titulo']); ?></h4>
-                        <p><?php echo nl2br(htmlspecialchars($noticia['noticia'])); ?></p>
-                        <p><strong>Autor:</strong> <?php echo htmlspecialchars($noticia['autor']); ?></p>
+                        <p><?php echo nl2br(htmlspecialchars($noticiaModel->resumirTexto($noticia['noticia'],100))); ?></p>
                         <?php if (!empty($noticia['imagem'])): ?>
                             <img class="post-card__image" src="<?php echo htmlspecialchars($noticia['imagem']); ?>" alt="Imagem da notícia" width="200">
                         <?php endif; ?>

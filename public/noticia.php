@@ -88,84 +88,104 @@ $curtiu = $usuario ? $likeModel->usuarioCurtiu($usuario, $id) : false;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $noticia['titulo']; ?></title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/noticia.css">
 </head>
 
 <body>
     <?php include '../contents/header.html'; ?>
-    <h1><?php echo $noticia['titulo']; ?></h1>
-    <p>Por <?php echo $noticia['autorNome']; ?> em <?php echo date('d M Y - H:i', strtotime($noticia['data'])); ?></p>
-     <?php
+    <main class="container">
+        <article class="article-card">
+            <h1 class="article-title"><?php echo $noticia['titulo']; ?></h1>
+            <p class="article-meta">Por <?php echo $noticia['autorNome']; ?> em <?php echo date('d M Y - H:i', strtotime($noticia['data'])); ?></p>
+            <?php
     $imagemSrc = $noticiaModel->resolverImagemUrl($noticia['imagem']);
     ?>
-    <?php if (!empty($imagemSrc)): ?>
-        <img src="<?php echo htmlspecialchars($imagemSrc); ?>" alt="Imagem da notícia">
-    <?php endif; ?>
-    <p><?php echo nl2br($noticia['noticia']); ?></p>
-    <br><br>
-    <div>
-        <h2>Comentários(<?php echo count($comentarios); ?>)</h2>
-        <?php if (isset($_SESSION['usuario_id'])): ?>
-            <form method="post" action="noticia.php?id=<?php echo $id; ?>">
-                <input type="hidden" name="action" value="<?php echo $curtiu ? 'descurtir' : 'curtir'; ?>">
-                <input type="hidden" name="noticia_id" value="<?php echo $id; ?>">
-                <button type="submit">
-                    <?php echo $curtiu ? '❤️ Descurtir' : '🤍 Curtir'; ?>
-                </button>
-            </form>
-        <?php else: ?>
-            <p><a href="login.php">Faça login</a> para curtir.</p>
-        <?php endif; ?>
-        <span>Curtidas(<?php echo $likesCount; ?>)</span>
-    </div>
+            <?php if (!empty($imagemSrc)): ?>
+                <div class="article-image">
+                    <img src="<?php echo htmlspecialchars($imagemSrc); ?>" alt="Imagem da notícia">
+                </div>
+            <?php endif; ?>
 
-    <?php foreach ($comentarios as $comentario): ?>
-        <div class="comentario">
-            <p><strong><?php echo htmlspecialchars($comentario['usuarioNome']); ?></strong> comentou em
-                <?php echo date('d/m/Y H:i', strtotime($comentario['data'])); ?>
-            </p>
+            <div class="article-body">
+                <?php echo nl2br($noticia['noticia']); ?>
+            </div>
 
-            <?php if ($editingCommentId === (int) $comentario['id']): ?>
-                <form method="post" action="noticia.php?id=<?php echo $id; ?>">
-                    <input type="hidden" name="action" value="atualizar">
-                    <input type="hidden" name="comment_id" value="<?php echo $comentario['id']; ?>">
-                    <textarea name="comentario" rows="4"
-                        required><?php echo htmlspecialchars($comentario['comentario']); ?></textarea>
-                    <button type="submit">Salvar comentário</button>
-                    <a href="noticia.php?id=<?php echo $id; ?>">Cancelar</a>
+            <div class="article-actions">
+                <?php if (isset($_SESSION['usuario_id'])): ?>
+                    <form method="post" action="noticia.php?id=<?php echo $id; ?>">
+                        <input type="hidden" name="action" value="<?php echo $curtiu ? 'descurtir' : 'curtir'; ?>">
+                        <input type="hidden" name="noticia_id" value="<?php echo $id; ?>">
+                        <button type="submit" class="btn"><?php echo $curtiu ? '❤️ Descurtir' : '🤍 Curtir'; ?></button>
+                    </form>
+                <?php else: ?>
+                    <p><a href="login.php" class="btn btn--secondary">Faça login</a> para curtir.</p>
+                <?php endif; ?>
+                <span class="article-actions__label">Curtidas <strong>(<?php echo $likesCount; ?>)</strong></span>
+            </div>
+        </article>
+
+        <section class="comment-section">
+            <div class="comment-section__header">
+                <h2 class="comment-section__title">Comentários (<?php echo count($comentarios); ?>)</h2>
+            </div>
+
+            <?php foreach ($comentarios as $comentario): ?>
+                <article class="comment-card">
+                    <div class="comment-card__header">
+                        <div>
+                            <p class="comment-card__author"><?php echo htmlspecialchars($comentario['usuarioNome']); ?></p>
+                            <p class="comment-card__date">Comentou em <?php echo date('d/m/Y H:i', strtotime($comentario['data'])); ?></p>
+                        </div>
+
+                        <?php if ($usuario === $comentario['autor'] && $editingCommentId !== (int) $comentario['id']): ?>
+                            <div class="comment-card__actions">
+                                <form method="get" action="noticia.php" style="display:inline">
+                                    <input type="hidden" name="id" value="<?php echo $id; ?>">
+                                    <input type="hidden" name="action" value="editar">
+                                    <input type="hidden" name="comment_id" value="<?php echo $comentario['id']; ?>">
+                                    <button type="submit" class="btn btn--text">Editar</button>
+                                </form>
+                                <form method="post" action="noticia.php?id=<?php echo $id; ?>" style="display:inline">
+                                    <input type="hidden" name="action" value="apagar">
+                                    <input type="hidden" name="comment_id" value="<?php echo $comentario['id']; ?>">
+                                    <button type="submit" class="btn btn--text" onclick="return confirm('Tem certeza que deseja apagar este comentário?')">Apagar</button>
+                                </form>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <?php if ($editingCommentId === (int) $comentario['id']): ?>
+                        <form method="post" action="noticia.php?id=<?php echo $id; ?>" class="comment-form">
+                            <input type="hidden" name="action" value="atualizar">
+                            <input type="hidden" name="comment_id" value="<?php echo $comentario['id']; ?>">
+                            <textarea name="comentario" rows="4" required><?php echo htmlspecialchars($comentario['comentario']); ?></textarea>
+                            <div class="comment-card__actions">
+                                <button type="submit" class="btn">Salvar comentário</button>
+                                <a href="noticia.php?id=<?php echo $id; ?>" class="btn btn--secondary">Cancelar</a>
+                            </div>
+                        </form>
+                    <?php else: ?>
+                        <div class="comment-card__body"><?php echo nl2br(htmlspecialchars($comentario['comentario'])); ?></div>
+                    <?php endif; ?>
+                </article>
+            <?php endforeach; ?>
+
+            <?php if (!empty($error_msg)): ?>
+                <p style="color: red;"><?php echo htmlspecialchars($error_msg); ?></p>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+                <form method="post" action="noticia.php?id=<?php echo $id; ?>" class="comment-form">
+                    <label for="comentario">Deixe um comentário</label>
+                    <textarea id="comentario" name="comentario" rows="4" required></textarea>
+                    <button type="submit" class="btn">Enviar comentário</button>
                 </form>
             <?php else: ?>
-                <p><?php echo nl2br(htmlspecialchars($comentario['comentario'])); ?></p>
-                <?php if ($usuario === $comentario['autor']): ?>
-                    <form method="get" action="noticia.php" style="display:inline">
-                        <input type="hidden" name="id" value="<?php echo $id; ?>">
-                        <input type="hidden" name="action" value="editar">
-                        <input type="hidden" name="comment_id" value="<?php echo $comentario['id']; ?>">
-                        <button type="submit">Editar comentário</button>
-                    </form>
-                    <form method="post" action="noticia.php?id=<?php echo $id; ?>" style="display:inline">
-                        <input type="hidden" name="action" value="apagar">
-                        <input type="hidden" name="comment_id" value="<?php echo $comentario['id']; ?>">
-                        <button type="submit" onclick="return confirm('Tem certeza que deseja apagar este comentário?')">Apagar
-                            comentário</button>
-                    </form>
-                <?php endif; ?>
+                <p><a href="login.php" class="btn btn--secondary">Faça login</a> para comentar.</p>
             <?php endif; ?>
-        </div>
-    <?php endforeach; ?>
-    <br><br>
-    <?php if (!empty($error_msg)): ?>
-        <p style="color: red;"><?php echo htmlspecialchars($error_msg); ?></p>
-    <?php endif; ?>
-
-    <?php if (isset($_SESSION['usuario_id'])): ?>
-        <form method="post" action="noticia.php?id=<?php echo $id; ?>">
-            <label for="comentario">Deixe um comentário</label>
-            <textarea id="comentario" name="comentario" rows="4" required></textarea>
-            <button type="submit">Enviar comentário</button>
-        </form>
-    <?php else: ?>
-        <p><a href="login.php">Faça login</a> para comentar.</p>
-    <?php endif; ?>
+        </section>
+    </main>
 
     <?php include '../contents/footer.html'; ?>
 </body>

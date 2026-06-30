@@ -44,6 +44,7 @@ $nivel = $_SESSION['usuario_nivel'];
                     <p>Gerencie suas publicações e acompanhe o que está em destaque.</p>
                 </div>
                 <div class="dashboard-actions">
+                    <a class="btn btn-profile" href="perfil.php">Meu perfil</a>
                     <a class="btn" href="nova_noticia.php">Nova notícia</a>
                     <?php if ($nivel === 'admin'): ?>
                         <a class="btn" href="../admin/usuarios.php">Gerenciar usuários</a>
@@ -60,7 +61,7 @@ $nivel = $_SESSION['usuario_nivel'];
                         <h4><?php echo htmlspecialchars($noticia['titulo']); ?></h4>
                         <p><?php echo nl2br(htmlspecialchars($noticiaModel->resumirTexto($noticia['noticia'],100))); ?></p>
                         <?php if (!empty($noticia['imagem'])): ?>
-                            <img class="post-card__image" src="<?php echo htmlspecialchars($noticia['imagem']); ?>" alt="Imagem da notícia" width="200">
+                            <img class="post-card__image" src="<?php echo htmlspecialchars($noticiaModel->resolverImagemUrl($noticia['imagem'])); ?>" alt="Imagem da notícia" width="200">
                         <?php endif; ?>
                         <div class="dashboard-actions" style="margin-top: 12px;">
                             <a class="btn" href="editar_noticia.php?id=<?php echo $noticia['id']; ?>">Editar</a>

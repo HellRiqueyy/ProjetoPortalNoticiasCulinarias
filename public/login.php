@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once '../config/config.php';
-include_once '../classes/usuario.php';
+include_once '../classes/Usuario.php';
 
 
 $usuario = new Usuario($conexao);

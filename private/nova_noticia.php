@@ -21,7 +21,7 @@ function uploadImagem($file) {
     $dest = $uploadDir . $filename;
 
     if (move_uploaded_file($file['tmp_name'], $dest)) {
-        return 'uploads/' . $filename;
+        return '/public/uploads/' . $filename;
     }
 
     return null;

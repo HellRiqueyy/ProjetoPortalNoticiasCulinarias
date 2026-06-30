@@ -22,3 +22,47 @@
 .auth-card p {
   color: var(--cor-cinza);
 }
+
+.auth-card--wide {
+  width: min(680px, 100%);
+}
+
+.current-image {
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  padding: 12px;
+  background: #fffdf8;
+}
+
+.current-image p {
+  margin: 0 0 8px;
+  font-weight: 600;
+}
+
+.current-image img {
+  border-radius: 10px;
+  max-height: 220px;
+  object-fit: cover;
+}
+
+.image-field {
+  display: grid;
+  gap: 6px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cor-cinza);
+}
+
+.checkbox-row input {
+  width: auto;
+}
+
+.profile-message {
+  margin-bottom: 12px;
+  color: var(--cor-primaria);
+  font-weight: 600;
+}

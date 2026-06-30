@@ -1,6 +1,6 @@
 <?php
 include_once '../config/config.php';
-include_once '../classes/usuario.php';
+include_once '../classes/Usuario.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
     $imagem = $_POST['imagem'];
-    $usuario->criarUsuario($nome, $email, $senha);
+    $usuario->registrar($nome, $email, $senha);
     $alert = true;
 }
 ?>

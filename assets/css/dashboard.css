@@ -17,6 +17,15 @@
   flex-wrap: wrap;
 }
 
+.btn-profile {
+  background: linear-gradient(135deg, var(--cor-primaria), var(--cor-secundaria));
+  box-shadow: 0 6px 16px rgba(122, 63, 0, 0.18);
+}
+
+.btn-profile:hover {
+  transform: translateY(-2px);
+}
+
 .post-list {
   display: grid;
   gap: 18px;

@@ -39,8 +39,11 @@ $noticias = $noticiaModel->lerNoticiasPorData();
                             <?php echo date('d M Y', strtotime($noticia['data'])); ?>
                         </p>
                         <p><?php echo nl2br(htmlspecialchars($noticiaModel->resumirTexto($noticia['noticia'],50))); ?></p>
-                        <?php if (!empty($noticia['imagem'])): ?>
-                            <img src="<?php echo $noticia['imagem']; ?>" alt="Imagem da notícia">
+                        <?php
+                        $imagemSrc = $noticiaModel->resolverImagemUrl($noticia['imagem']);
+                        ?>
+                        <?php if (!empty($imagemSrc)): ?>
+                            <img src="<?php echo htmlspecialchars($imagemSrc); ?>" alt="Imagem da notícia">
                         <?php endif; ?>
                     </div>
                 </article>
@@ -50,5 +53,4 @@ $noticias = $noticiaModel->lerNoticiasPorData();
 
     <?php include 'contents/footer.html'; ?>
 </body>
-
 </html>

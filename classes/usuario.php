@@ -43,10 +43,6 @@ class Usuario {
         return false;
     }
 
-    public function criarUsuario($nome, $email, $senha) {
-        return $this->registrar($nome, $email, $senha);
-    }
-
     public function lerUsuarios() {
         $query = "SELECT * FROM " . $this->table_name;
         $stmt = $this->conn->prepare($query);

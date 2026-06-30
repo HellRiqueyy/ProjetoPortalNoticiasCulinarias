@@ -23,6 +23,38 @@ class Noticia
         // Corta o texto no último espaço encontrado e adiciona as reticências
         return mb_substr($subtexto, 0, $ultimoEspaco) . '...';
     }
+    public function resolverImagemUrl($imagem)
+    {
+        if (empty($imagem)) {
+            return '';
+        }
+
+        if (preg_match('#^https?://#', $imagem)) {
+            return $imagem;
+        }
+
+        $caminho = str_replace('\\', '/', $imagem);
+        $caminho = trim($caminho, '/');
+        $caminho = preg_replace('#^\.\./+#', '', $caminho);
+        $caminho = preg_replace('#^public/+#', '', $caminho);
+        $caminho = 'public/' . $caminho;
+
+        $documentRoot = isset($_SERVER['DOCUMENT_ROOT'])
+            ? rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/')
+            : '';
+        $projectRoot = rtrim(str_replace('\\', '/', dirname(__DIR__)), '/');
+
+        $basePath = '';
+        if ($documentRoot && strpos($projectRoot, $documentRoot) === 0) {
+            $basePath = substr($projectRoot, strlen($documentRoot));
+        }
+
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+        return $scheme . $host . rtrim($basePath, '/') . '/' . ltrim($caminho, '/');
+    }
+
     public function criarNoticia($titulo, $noticia, $imagem)
     {
         $autor = $_SESSION['usuario_id'];
@@ -107,16 +139,28 @@ class Noticia
         $stmt->execute();
         return $stmt;
     }
-    public function atualizarNoticia($id, $titulo, $noticia)
+    public function atualizarNoticia($id, $titulo, $noticia, $imagem = null)
     {
-        $query = "UPDATE " . $this->table_name . " SET titulo = ?, noticia = ? WHERE id = ?";
-        $stmt = $this->conn->prepare($query);
+        if ($imagem === null) {
+            $query = "UPDATE " . $this->table_name . " SET titulo = ?, noticia = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($query);
 
-        if (!$stmt) {
-            throw new Exception("Erro ao preparar consulta: " . $this->conn->error);
+            if (!$stmt) {
+                throw new Exception("Erro ao preparar consulta: " . $this->conn->error);
+            }
+
+            $stmt->bind_param("ssi", $titulo, $noticia, $id);
+        } else {
+            $query = "UPDATE " . $this->table_name . " SET titulo = ?, noticia = ?, imagem = ? WHERE id = ?";
+            $stmt = $this->conn->prepare($query);
+
+            if (!$stmt) {
+                throw new Exception("Erro ao preparar consulta: " . $this->conn->error);
+            }
+
+            $stmt->bind_param("sssi", $titulo, $noticia, $imagem, $id);
         }
 
-        $stmt->bind_param("ssi", $titulo, $noticia, $id);
         $stmt->execute();
         return $stmt;
     }

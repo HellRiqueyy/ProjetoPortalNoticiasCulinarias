@@ -61,8 +61,26 @@ $sqlCriarTabelaComentario = "CREATE TABLE IF NOT EXISTS `comentarios` (
     FOREIGN KEY (`noticia`) REFERENCES `noticias` (`id`) ON DELETE SET NULL,
     FOREIGN KEY (`autor`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL -- Ajustado para o padrão correto do MySQL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
-if (!$conexao->query($sqlCriarTabela)) {
+if (!$conexao->query($sqlCriarTabelaComentario)) {
     die("Falha ao criar tabela noticias: " . $conexao->error);
+}
+
+$sqlCriarTabelaLikes = "CREATE TABLE IF NOT EXISTS `likes_noticias` (
+    `usuario_id` int(11) NOT NULL,
+    `noticia_id` int(11) NOT NULL,
+    `data_curtida` datetime DEFAULT current_timestamp(),
+    
+    -- Define a união dos dois campos como a Chave Primária.
+    -- Isso impede o mesmo usuário de curtir a mesma notícia 2 vezes!
+    PRIMARY KEY (`usuario_id`, `noticia_id`),
+    
+    -- Chaves Estrangeiras: Se o usuário ou a notícia forem deletados, o like some
+    FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`noticia_id`) REFERENCES `noticias` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
+
+if (!$conexao->query($sqlCriarTabelaLikes)) {
+    die("Falha ao criar tabela likes_noticias: " . $conexao->error);
 }
 
 $resultadoTabela = $conexao->query("SELECT COUNT(*) AS total FROM noticias");
